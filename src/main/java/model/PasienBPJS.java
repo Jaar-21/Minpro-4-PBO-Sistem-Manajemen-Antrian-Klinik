@@ -17,6 +17,13 @@ public class PasienBPJS extends Pasien {
         super(nama, umur, noTelepon);
         this.nomorBPJS = nomorBPJS;
     }
+    
+    public PasienBPJS(int idPasien, String nama, int umur,
+                      String noTelepon, String nomorBPJS) {
+        super(idPasien, nama, umur, noTelepon);
+        this.nomorBPJS = nomorBPJS;
+    }
+
 
     public String getNomorBPJS(){
         return nomorBPJS;

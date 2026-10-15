@@ -21,6 +21,13 @@ public abstract class Pasien {
         this.umur = umur;
         this.noTelepon = noTelepon;
     }
+    
+    public Pasien(int idPasien, String nama, int umur, String noTelepon){
+    this.idPasien = idPasien;
+    this.nama = nama;
+    this.umur = umur;
+    this.noTelepon = noTelepon;
+    }
 
     public int getIdPasien(){
         return idPasien;

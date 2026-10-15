@@ -17,6 +17,11 @@ public class PasienUmum extends Pasien implements Pembayaran{
         super(nama, umur, noTelepon);
         this.jenisPembayaran = jenisPembayaran;
     }
+    public PasienUmum(int idPasien, String nama, int umur,
+                  String noTelepon, String jenisPembayaran) {
+    super(idPasien, nama, umur, noTelepon);
+    this.jenisPembayaran = jenisPembayaran;
+    }
 
     public String getJenisPembayaran(){
         return jenisPembayaran;

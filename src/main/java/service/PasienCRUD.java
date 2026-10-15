@@ -3,93 +3,65 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package service;
-
-import model.PasienUmum;
-import model.PasienBPJS;
-import model.Pasien;
-import java.util.ArrayList;
-
 /**
  * @author Asus
  */
+
+
+import dao.PasienDAO;
+import java.util.List;
+import model.Pasien;
+import model.PasienUmum;
+import model.PasienBPJS;
+
+
 public class PasienCRUD {
-    private ArrayList<Pasien> listPasien = new ArrayList<>();
-    private ArrayList<PasienUmum> listPasienUmum = new ArrayList<>();
-    private ArrayList<PasienBPJS> listPasienBPJS = new ArrayList<>();
 
-    public PasienCRUD() {
-        PasienUmum pasienUmum = new PasienUmum(
-                "Ahmad", 20, "08123456789", "Tunai");
+    private PasienDAO dao = new PasienDAO();
 
-        listPasien.add(pasienUmum);
-        listPasienUmum.add(pasienUmum);
-    }
-
-    public boolean cekIdPasien(int idPasien){
-        for (Pasien pasien : listPasien){
-            if (pasien.getIdPasien() == idPasien){
+    public boolean cekIdPasien(int idPasien) {
+        for (Pasien pasien : dao.getSemuaPasien()) {
+            if (pasien.getIdPasien() == idPasien) {
                 return true;
             }
         }
         return false;
     }
 
-    /// tambah pasien
-    public void tambahPasienUmum(PasienUmum pasien){
-        listPasien.add(pasien);
-        listPasienUmum.add(pasien);
+    public boolean tambahPasienUmum(PasienUmum pasien) {
+        return dao.tambahPasienUmum(pasien);
     }
 
-    public void tambahPasienBPJS(PasienBPJS pasien){
-        listPasien.add(pasien);
-        listPasienBPJS.add(pasien);
+    public boolean tambahPasienBPJS(PasienBPJS pasien) {
+        return dao.tambahPasienBPJS(pasien);
     }
 
-    public ArrayList<Pasien> getListPasien(){
-        return listPasien;
+    public List<Pasien> getListPasien() {
+        return dao.getSemuaPasien();
     }
 
-    /// hapus pasien 
-    public boolean hapusPasien(int idPasien){
-        boolean dihapus = listPasien.removeIf(pasien -> pasien.getIdPasien() == idPasien);
-        listPasienUmum.removeIf(pasien -> pasien.getIdPasien() == idPasien);
-        listPasienBPJS.removeIf(pasien -> pasien.getIdPasien() == idPasien);
-        return dihapus;
+    public boolean hapusPasien(int idPasien) {
+        return dao.hapusPasien(idPasien);
     }
 
-    /// update pasien 
-    public boolean updatePasien(int idPasien, String namaBaru, int umurBaru, String noTeleponBaru){
-        Pasien pasienDitemukan = null;
-        for (Pasien pasien : listPasien){
-            if (pasien.getIdPasien() == idPasien){
-                pasienDitemukan = pasien;
-                break;
+    public boolean updatePasien(
+            int idPasien, String namaBaru, int umurBaru,
+            String noTeleponBaru) {
+        return dao.updatePasien(
+                idPasien, namaBaru, umurBaru, noTeleponBaru);
+    }
+
+    public Pasien panggilPasien(int idPasien) {
+        Pasien pasien = dao.ambilPasien(idPasien);
+
+        if (pasien != null) {
+            boolean berhasil = dao.hapusPasien(idPasien);
+
+            if (berhasil) {
+                return pasien;
             }
         }
-        if (pasienDitemukan != null){
-            pasienDitemukan.setNama(namaBaru);
-            pasienDitemukan.setUmur(umurBaru);
-            pasienDitemukan.setNoTelepon(noTeleponBaru);
-            return true;
-        }
-        return false;
-    }
 
-    /// panggil pasien 
-    public Pasien panggilPasien(int idPasien){
-        Pasien pasienDipanggil = null;
-
-        for (Pasien pasien : listPasien){
-            if (pasien.getIdPasien() == idPasien){
-                pasienDipanggil = pasien;
-                break;
-            }
-        }
-        if (pasienDipanggil != null){
-            listPasien.removeIf(pasien -> pasien.getIdPasien() == idPasien);
-            listPasienUmum.removeIf(pasien -> pasien.getIdPasien() == idPasien);
-            listPasienBPJS.removeIf(pasien -> pasien.getIdPasien() == idPasien);
-        }
-        return pasienDipanggil;
+        return null;
     }
 }

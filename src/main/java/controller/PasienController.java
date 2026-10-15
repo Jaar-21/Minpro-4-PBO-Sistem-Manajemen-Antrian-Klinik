@@ -87,9 +87,15 @@ public class PasienController {
 
                         PasienUmum pasienUmumBaru = new PasienUmum(
                                 nama, umur, noTelepon, jenisPembayaran);
+                        
+                        boolean berhasil = crud.tambahPasienUmum(pasienUmumBaru);
 
-                        crud.tambahPasienUmum(pasienUmumBaru);
-                        view.pesan("Pasien umum ditambahkan");
+                        if (berhasil) {
+                            view.pesan("Pasien umum berhasil ditambahkan");
+                        } else {
+                            view.pesan("Gagal menambahkan pasien umum");
+                        }
+
 
                     } else if (jenis == 2) {
 
@@ -98,9 +104,15 @@ public class PasienController {
 
                         PasienBPJS pasienBPJSBaru = new PasienBPJS(
                                 nama, umur, noTelepon, nomorBPJS);
+                        
+                        boolean berhasil = crud.tambahPasienBPJS(pasienBPJSBaru);
 
-                        crud.tambahPasienBPJS(pasienBPJSBaru);
-                        view.pesan("Pasien BPJS ditambahkan");
+                        if (berhasil) {
+                            view.pesan("Pasien BPJS berhasil ditambahkan");
+                        } else {
+                            view.pesan("Gagal menambahkan pasien BPJS");
+                        }
+
 
                     }
                     break;

@@ -5,7 +5,7 @@
 package view;
 
 import model.Pasien;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Asus     
@@ -30,7 +30,7 @@ public class PasienView {
         System.out.println("2. Pasien BPJS");
     }
 
-    public void tampilkanDaftarPasien(ArrayList<Pasien> listPasien){
+    public void tampilkanDaftarPasien(List<Pasien> listPasien){
         if (listPasien.isEmpty()){
             System.out.println("belum ada data pasien");
         } else {
