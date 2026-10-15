@@ -1,642 +1,361 @@
 # 🏥 Sistem Manajemen Antrian Pasien pada Klinik
 
-> Mini Project 3 - Pemrograman Berorientasi Objek (PBO)
+> Mini Project 4 - Pemrograman Berorientasi Objek (PBO)
 
-Program CRUD (Create, Read, Update, Delete) berbasis Java console untuk mengelola data antrian pasien pada sebuah klinik. Program memiliki dua jenis pasien, yaitu **Pasien Umum** dan **Pasien BPJS**.
+Program berbasis Java Console untuk mengelola data antrian pasien klinik menggunakan database MySQL. Program menyediakan fitur CRUD (*Create, Read, Update, Delete*) dan pemanggilan pasien dengan dua jenis pasien, yaitu Pasien Umum dan Pasien BPJS.
 
-Program ini merupakan pengembangan dari Mini Project sebelumnya dengan penerapan **Encapsulation, Inheritance, Polymorphism, Abstraction, MVC (Model-View-Controller), validasi input**, serta **Interface** sebagai nilai tambah.
-
----
-
-# Sistem Manajemen Antrian Pasien pada Klinik
-
-## Identitas Mahasiswa
-
-| Keterangan        | Data                           |
-| ----------------- | ------------------------------ |
-| **Nama**          | Ahmad Fajar Novia              |
-| **NIM**           | 2509116041                     |
-| **Program Studi** | Sistem Informasi               |
-| **Fakultas**      | Fakultas Teknik                |
-| **Universitas**   | Universitas Mulawarman         |
-| **Praktikum**     | Pemrograman Berorientasi Objek |
-| **Project**       | Mini Project 3                 |
+Program menerapkan konsep Encapsulation, Inheritance, Polymorphism, Abstraction, MVC (*Model-View-Controller*), JDBC, validasi input, serta Interface sebagai nilai tambah.
 
 ---
 
-## 📋 Deskripsi Singkat
+## 👨‍🎓 Identitas Mahasiswa
 
-Program ini dibuat untuk mensimulasikan sistem manajemen antrian pasien pada sebuah klinik. Program berjalan menggunakan console dan menyediakan beberapa menu yang dapat digunakan untuk menampilkan, menambahkan, memperbarui, menghapus, dan memanggil pasien.
-
-Pasien dibedakan menjadi dua jenis, yaitu **Pasien Umum** dan **Pasien BPJS**. Pasien Umum memiliki pilihan pembayaran berupa **Tunai** atau **Transfer**, sedangkan Pasien BPJS memiliki **nomor BPJS**.
-
-Setiap pasien mendapatkan ID secara otomatis ketika data pasien dibuat. Program juga dilengkapi validasi input untuk memastikan data yang dimasukkan sesuai dengan ketentuan, seperti nama hanya berupa huruf, umur berada pada rentang 1–200, nomor telepon terdiri dari 9–13 digit, dan nomor BPJS hanya berupa angka.
-
-Pada program juga diterapkan konsep **abstraction** melalui abstract class `Pasien`, **inheritance** melalui `PasienUmum` dan `PasienBPJS`, serta **polymorphism** melalui method overriding dan overloading. Struktur program menggunakan pola **MVC** agar bagian model, tampilan, dan pengatur alur program dipisahkan.
+| Keterangan | Data |
+|---|---|
+| Nama | Ahmad Fajar Novia |
+| NIM | 2509116041 |
+| Program Studi | Sistem Informasi |
+| Fakultas | Fakultas Teknik |
+| Universitas | Universitas Mulawarman |
+| Mata Kuliah | Pemrograman Berorientasi Objek |
+| Project | Mini Project 4 |
 
 ---
 
-## 🗂️ Struktur Program (Package)
+## 📋 1. Deskripsi Singkat Program
 
-Program disusun menggunakan struktur **MVC (Model-View-Controller)** dengan beberapa package tambahan untuk memisahkan fungsi setiap bagian program.
+Sistem Manajemen Antrian Pasien pada Klinik merupakan program yang digunakan untuk mengelola data pasien melalui menu console. Pengguna dapat menampilkan, menambahkan, memperbarui, menghapus, dan memanggil pasien berdasarkan ID.
+
+Program memiliki dua jenis pasien:
+
+- **Pasien Umum:** memiliki pilihan pembayaran Tunai atau Transfer.
+- **Pasien BPJS:** memiliki nomor BPJS sebagai informasi tambahan.
+
+Data pasien disimpan menggunakan database MySQL sehingga data yang belum dihapus tetap tersedia ketika program dijalankan kembali.
+
+Program juga dilengkapi validasi input untuk memeriksa nama, umur, nomor telepon, nomor BPJS, dan ID pasien.
+
+---
+
+## 🗂️ 2. Struktur Package
 
 ```text
-src/
+src/main/java/
 ├── main/
 │   └── Main.java
-│
 ├── controller/
 │   └── PasienController.java
-│
 ├── model/
 │   ├── Pasien.java
 │   ├── PasienUmum.java
 │   ├── PasienBPJS.java
 │   └── Pembayaran.java
-│
-├── service/
-│   └── PasienCRUD.java
-│
 ├── view/
 │   └── PasienView.java
-│
+├── service/
+│   └── PasienCRUD.java
+├── dao/
+│   └── PasienDAO.java
+├── database/
+│   └── KoneksiDatabase.java
 └── helper/
     └── ValidasiInput.java
 ```
 
 ### Penjelasan Package
 
-- **main**
-  - `Main.java` → menjadi titik awal program dan menjalankan `PasienController`.
-
-- **controller**
-  - `PasienController.java` → mengatur alur program, menerima input dari pengguna, menentukan menu yang dipilih, serta menghubungkan View dengan Service dan Model.
-
-- **model**
-  - `Pasien.java` → abstract class yang menjadi superclass untuk seluruh jenis pasien.
-  - `PasienUmum.java` → subclass dari `Pasien` untuk pasien umum.
-  - `PasienBPJS.java` → subclass dari `Pasien` untuk pasien BPJS.
-  - `Pembayaran.java` → interface yang digunakan untuk proses pembayaran pasien umum.
-
-- **service**
-  - `PasienCRUD.java` → menangani proses pengelolaan data pasien seperti tambah, update, hapus, cek ID, dan panggil pasien menggunakan `ArrayList`.
-
-- **view**
-  - `PasienView.java` → menangani tampilan menu, daftar pasien, pilihan jenis pasien, dan pesan yang ditampilkan kepada pengguna.
-
-- **helper**
-  - `ValidasiInput.java` → menangani validasi input pengguna agar data yang dimasukkan sesuai dengan ketentuan program.
+- **main:** berisi `Main.java` sebagai titik awal program untuk menjalankan `PasienController`.
+- **controller:** berisi `PasienController.java` yang mengatur alur program, menerima input, dan memproses pilihan menu.
+- **model:** berisi class `Pasien`, `PasienUmum`, `PasienBPJS`, dan interface `Pembayaran` untuk merepresentasikan data serta perilaku pasien.
+- **view:** berisi `PasienView.java` untuk menampilkan menu, daftar pasien, dan pesan kepada pengguna.
+- **service:** berisi `PasienCRUD.java` yang mengatur proses tambah, tampil, update, hapus, dan panggil pasien.
+- **dao:** berisi `PasienDAO.java` yang menjalankan operasi SQL untuk mengelola data pasien.
+- **database:** berisi `KoneksiDatabase.java` untuk menghubungkan aplikasi Java dengan MySQL.
+- **helper:** berisi `ValidasiInput.java` untuk memeriksa input pengguna.
 
 ---
 
-# ⚙️ Alur Program & Tampilan Menu
+## ⚙️ 3. Penjelasan Alur Program
 
-Saat program dijalankan, akan muncul menu utama:
+Saat program dijalankan, `Main.java` memanggil `PasienController` untuk menampilkan menu utama.
 
-<img width="504" height="208" alt="image" src="https://github.com/user-attachments/assets/d04923de-8aee-436b-afa7-fd7e58de21eb" />
+Alur pengolahan data:
+
+1. Pengguna memilih menu melalui console.
+2. Controller menerima dan memvalidasi input.
+3. Controller memanggil method pada Service.
+4. Service meneruskan proses pengelolaan data ke DAO.
+5. DAO menjalankan perintah SQL melalui JDBC ke database MySQL.
+6. Hasil proses ditampilkan kepada pengguna melalui View.
+
+### Menu Program
+
+<img width="504" height="208" alt="image" src="https://github.com/user-attachments/assets/eaac771c-58de-4af5-acd2-7025839c6bf9" />
 
 
----
+**1. Tampilkan Pasien**
 
-## 1️⃣ Tampilkan Pasien
+<img width="744" height="257" alt="image" src="https://github.com/user-attachments/assets/2d931ebd-d6f2-4bc3-9c44-2f742518dcc4" />
 
-<img width="786" height="284" alt="image" src="https://github.com/user-attachments/assets/f989b5f7-3640-4847-95e1-c50becb5107b" />
+Menampilkan seluruh data pasien yang tersimpan di database, meliputi ID, nama, umur, nomor telepon, dan informasi tambahan sesuai jenis pasien.
 
-Menu **Tampilkan Pasien** digunakan untuk melihat seluruh pasien yang sedang berada di dalam antrian.
+**2. Tambahkan Pasien**
 
-Data ditampilkan dalam bentuk tabel yang berisi:
+<img width="790" height="710" alt="image" src="https://github.com/user-attachments/assets/9e0f60a6-1583-4d9d-8556-db143e48e055" />
 
-- ID Pasien
-- Nama
-- Umur
-- Nomor Telepon
-- Informasi tambahan
+Pengguna memasukkan nama, umur, nomor telepon, dan jenis pasien. Pasien Umum memiliki pilihan pembayaran Tunai atau Transfer, sedangkan Pasien BPJS meminta nomor BPJS. ID dibuat otomatis oleh MySQL menggunakan `AUTO_INCREMENT`.
 
-Informasi tambahan akan menyesuaikan jenis pasien. Untuk Pasien Umum akan menampilkan jenis pembayaran, sedangkan Pasien BPJS akan menampilkan nomor BPJS.
+**3. Update Pasien**
 
-Jika belum terdapat data pasien, program akan menampilkan pesan bahwa belum ada data pasien.
+<img width="698" height="669" alt="image" src="https://github.com/user-attachments/assets/8feb4062-20c1-46e1-b6f9-e0bec760841c" />
 
----
+Memperbarui nama, umur, dan nomor telepon berdasarkan ID pasien. Jika ID tidak ditemukan, program menampilkan pesan bahwa pasien tidak ditemukan.
 
-## 2️⃣ Tambahkan Pasien
+**4. Hapus Pasien**
 
-<img width="657" height="398" alt="image" src="https://github.com/user-attachments/assets/d5e0851e-a6c0-4908-8c3b-55dd7261485e" />
+<img width="734" height="601" alt="image" src="https://github.com/user-attachments/assets/2d33f930-3636-4549-b0cd-c00fe02a8c21" />
 
-Menu **Tambahkan Pasien** digunakan untuk memasukkan pasien baru ke dalam sistem.
+Menghapus data pasien berdasarkan ID dari database MySQL. Data pada tabel terkait juga terhapus melalui relasi foreign key dengan `ON DELETE CASCADE`.
 
-Program akan meminta:
+**5. Panggil Pasien**
 
-1. Nama pasien
-2. Umur pasien
-3. Nomor telepon
-4. Jenis pasien
+<img width="683" height="484" alt="image" src="https://github.com/user-attachments/assets/671b88c6-de45-43d4-bc3e-a6c04197ed7e" />
 
-Terdapat dua pilihan jenis pasien:
+Menampilkan informasi pasien berdasarkan ID. Untuk Pasien Umum, program juga menjalankan proses pembayaran. Setelah berhasil dipanggil, data pasien dihapus dari database karena dianggap sudah masuk untuk mendapatkan pelayanan.
 
-```text
-1. Pasien Umum
-2. Pasien BPJS
-```
+**6. Keluar**
 
-### Pasien Umum
+<img width="631" height="323" alt="image" src="https://github.com/user-attachments/assets/06c00a55-f861-48ea-ac8f-63608545eff0" />
 
-Jika pengguna memilih Pasien Umum, program akan meminta jenis pembayaran:
-
-```text
-1. Tunai
-2. Transfer
-```
-
-Data kemudian dibuat sebagai objek `PasienUmum` dan dimasukkan ke dalam daftar pasien.
-
-### Pasien BPJS
-
-Jika pengguna memilih Pasien BPJS, program akan meminta nomor BPJS. Data kemudian dibuat sebagai objek `PasienBPJS` dan dimasukkan ke dalam daftar pasien.
-
-ID pasien tidak perlu dimasukkan secara manual karena akan dibuat secara otomatis oleh class `Pasien`.
+Mengakhiri program dan menampilkan pesan bahwa program selesai.
 
 ---
 
-## 3️⃣ Update Pasien
+## 🔒 4. Penerapan Encapsulation
 
-<img width="655" height="638" alt="image" src="https://github.com/user-attachments/assets/4e223434-5333-4e98-a5ff-e006756bb296" />
+Encapsulation diterapkan dengan menjadikan atribut tertentu sebagai `private` sehingga tidak dapat diakses langsung dari luar class.
 
-Menu **Update Pasien** digunakan untuk memperbarui data pasien berdasarkan ID.
+Contoh pada class `Pasien`:
 
-Program akan meminta ID pasien terlebih dahulu. Jika ID ditemukan, pengguna dapat mengubah:
+<img width="470" height="138" alt="image" src="https://github.com/user-attachments/assets/dcfbe380-f025-4fbe-be79-6d109c5cf8b4" />
 
-- Nama
-- Umur
-- Nomor telepon
 
-Jika ID tidak ditemukan, program akan menampilkan pesan:
-
-```text
-ID pasien tidak ditemukan
-```
-
-Validasi input tetap diterapkan ketika data baru dimasukkan.
-
----
-
-## 4️⃣ Menghapus Pasien
-
-<img width="666" height="556" alt="image" src="https://github.com/user-attachments/assets/8808af62-17fd-4c6f-83a7-2db17fa33bec" />
-
-Menu **Menghapus Pasien** digunakan untuk menghapus data pasien berdasarkan ID.
-
-Program akan mencari ID pasien di dalam daftar. Jika ditemukan, data pasien akan dihapus dari daftar pasien.
-
-Jika ID tidak ditemukan, program akan menampilkan pesan:
-
-```text
-ID pasien tidak ditemukan
-```
-
----
-
-## 5️⃣ Panggil Pasien
-
-<img width="659" height="464" alt="image" src="https://github.com/user-attachments/assets/2f67f1ea-27c6-48e6-8906-e7a1a5442d06" />
-
-Menu **Panggil Pasien** digunakan untuk memanggil pasien berdasarkan ID.
-
-Jika pasien ditemukan, program akan menampilkan informasi lengkap pasien sesuai dengan jenisnya.
-
-Untuk Pasien Umum, program juga akan menampilkan informasi proses pembayaran:
-
-```text
-Pembayaran pasien umum: Tunai
-```
-
-atau:
-
-```text
-Pembayaran pasien umum: Transfer
-```
-
-Setelah pasien dipanggil, data pasien akan dihapus dari daftar antrian karena pasien dianggap sudah masuk untuk mendapatkan pelayanan.
-
----
-
-## 6️⃣ Keluar
-
-<img width="514" height="200" alt="image" src="https://github.com/user-attachments/assets/b5f3d01b-c18f-42b2-acfa-1c91eb62c571" />
-
-Menu **Keluar** digunakan untuk mengakhiri program.
-
-Program akan menampilkan pesan:
-
-```text
-program selesai
-```
-
-Kemudian program berhenti.
-
----
-
-# 🔒 Penerapan Encapsulation
-
-<img width="459" height="139" alt="image" src="https://github.com/user-attachments/assets/0e7372ff-e2f7-4396-9eec-12fb96dc2b6a" />
-
-Encapsulation diterapkan dengan membatasi akses langsung terhadap atribut yang terdapat pada class.
-
-Pada class `Pasien`, atribut data utama dibuat `private`, yaitu:
-
-```java
-private String nama;
-private int umur;
-private String noTelepon;
-```
-
-Sedangkan `idPasien` dibuat:
+ID pasien menggunakan:
 
 ```java
 protected final int idPasien;
 ```
 
-Akses terhadap data pasien dilakukan melalui method seperti:
+Data diakses melalui getter dan setter, seperti `getNama()`, `setNama()`, `getUmur()`, dan `setUmur()`.
 
-- `getNama()`
-- `setNama()`
-- `getUmur()`
-- `setUmur()`
-- `getNoTelepon()`
-- `setNoTelepon()`
-- `getIdPasien()`
+Class `PasienUmum` memiliki atribut `private String jenisPembayaran`, sedangkan `PasienBPJS` memiliki atribut `private String nomorBPJS`.
 
-Setter juga memiliki validasi sehingga data yang dimasukkan tidak langsung diterima tanpa pemeriksaan.
-
-Contohnya pada `setNama()`, nama harus berupa huruf dan tidak boleh kosong.
-
-Pada `PasienBPJS`, atribut:
-
-```java
-private String nomorBPJS;
-```
-
-juga diakses melalui getter dan setter.
-
-Pada `PasienUmum`, atribut:
-
-```java
-private String jenisPembayaran;
-```
-
-juga menggunakan getter dan setter.
-
-Selain itu, data pasien pada `PasienCRUD` disimpan dalam atribut `private`:
-
-```java
-private ArrayList<Pasien> listPasien = new ArrayList<>();
-private ArrayList<PasienUmum> listPasienUmum = new ArrayList<>();
-private ArrayList<PasienBPJS> listPasienBPJS = new ArrayList<>();
-```
-
-Dengan demikian, data tidak diakses secara langsung dari luar class, tetapi melalui method yang telah disediakan.
+Setter juga melakukan validasi terhadap data yang dimasukkan. Dengan demikian, perubahan data dapat dikendalikan melalui method yang telah disediakan.
 
 ---
 
-# 🧬 Penerapan Inheritance
+## 🧬 5. Penerapan Inheritance
 
-<img width="240" height="92" alt="image" src="https://github.com/user-attachments/assets/5ea580c3-9ced-4064-9ce1-372f89070757" />
-
-Inheritance digunakan untuk membuat hubungan antara class `Pasien` dengan dua jenis pasien.
-
-Struktur inheritance pada program:
+Inheritance diterapkan dengan menjadikan `Pasien` sebagai superclass dan `PasienUmum` serta `PasienBPJS` sebagai subclass.
 
 ```text
-                 Pasien
-                /      \
-               /        \
-      PasienUmum      PasienBPJS
+          Pasien
+         /      \
+        /        \
+ PasienUmum   PasienBPJS
 ```
 
-### Superclass
+- **Pasien:** menyimpan data dasar pasien seperti ID, nama, umur, dan nomor telepon.
+- **PasienUmum:** mewarisi class `Pasien` dan memiliki atribut tambahan berupa jenis pembayaran.
+- **PasienBPJS:** mewarisi class `Pasien` dan memiliki atribut tambahan berupa nomor BPJS.
 
-`Pasien` merupakan superclass yang berisi data dan perilaku dasar yang dimiliki oleh semua pasien, seperti:
-
-- ID pasien
-- Nama
-- Umur
-- Nomor telepon
-- Getter dan setter
-- Method `tampilkanInfo()`
-
-### Subclass PasienUmum
-
-`PasienUmum` merupakan subclass dari `Pasien` dan memiliki data tambahan:
-
-```java
-private String jenisPembayaran;
-```
-
-### Subclass PasienBPJS
-
-`PasienBPJS` merupakan subclass dari `Pasien` dan memiliki data tambahan:
-
-```java
-private String nomorBPJS;
-```
-
-Kedua subclass menggunakan `extends Pasien` dan memanggil constructor superclass menggunakan:
-
-```java
-super(nama, umur, noTelepon);
-```
-
-Dengan inheritance, atribut dan method dasar pasien tidak perlu ditulis ulang pada setiap subclass.
+Kedua subclass menggunakan `extends Pasien`. Dengan inheritance, atribut dan method dasar tidak perlu ditulis ulang pada setiap subclass.
 
 ---
 
-# 🎭 Penerapan Polymorphism
+## 🎭 6. Penerapan Polymorphism
 
-Polymorphism diterapkan dalam dua bentuk, yaitu **method overriding** dan **method overloading**.
+Polymorphism diterapkan melalui method overriding dan method overloading.
 
-## 1. Method Overriding
+### A. Method Overriding
 
-Method `tampilkanInfo()` dibuat sebagai abstract method pada class `Pasien`:
+Class `Pasien` memiliki abstract method:
+
+<img width="440" height="34" alt="image" src="https://github.com/user-attachments/assets/926d414b-6565-443b-94ba-dfebde4b2654" />
+
+
+Method tersebut diimplementasikan oleh `PasienUmum` dan `PasienBPJS` menggunakan `@Override`.
+
+Meskipun nama method sama, informasi yang ditampilkan berbeda sesuai jenis pasien. Pasien Umum menampilkan informasi pembayaran, sedangkan Pasien BPJS menampilkan nomor BPJS.
+
+Method `getInfoTambahan()` juga di-override oleh kedua subclass agar informasi tambahan sesuai dengan jenis objek pasien.
+
+### B. Method Overloading
+
+Method overloading diterapkan melalui dua method `tampilkanInfo()` dengan parameter berbeda.
 
 ```java
 public abstract void tampilkanInfo();
 ```
 
-Method tersebut kemudian di-override oleh `PasienUmum`:
-
-<img width="638" height="226" alt="image" src="https://github.com/user-attachments/assets/18721af7-3a60-4adb-b7ce-789d4d481da2" />
+<img width="569" height="178" alt="image" src="https://github.com/user-attachments/assets/bd8476ba-3c6a-4073-b77e-20fc6c77eda9" />
 
 
-dan oleh `PasienBPJS`:
-
-<img width="627" height="223" alt="image" src="https://github.com/user-attachments/assets/589ee797-aaf0-46a3-84cc-1f92eb65755c" />
-
-
-Walaupun nama method sama, isi method menampilkan informasi yang berbeda sesuai dengan jenis pasien.
-
-Pasien Umum menampilkan informasi pembayaran, sedangkan Pasien BPJS menampilkan nomor BPJS.
-
-Selain `tampilkanInfo()`, method `getInfoTambahan()` juga di-override oleh kedua subclass.
-
-Pada `PasienUmum`:
-
-```java
-@Override
-public String getInfoTambahan() {
-    return "Pembayaran: " + jenisPembayaran;
-}
-```
-
-Sedangkan pada `PasienBPJS`:
-
-```java
-@Override
-public String getInfoTambahan() {
-    return "BPJS: " + nomorBPJS;
-}
-```
-
-Method tersebut digunakan oleh `toString()` pada class `Pasien` untuk menampilkan informasi tambahan sesuai objek yang digunakan.
+Method pertama tidak memiliki parameter, sedangkan method kedua menerima parameter `int cekId`. Method kedua memeriksa ID sebelum memanggil method `tampilkanInfo()` sesuai jenis objek pasien.
 
 ---
 
-## 2. Method Overloading
+## 🧱 7. Penerapan Abstraction
 
-Method overloading diterapkan pada class `Pasien` melalui dua method dengan nama yang sama tetapi parameter yang berbeda.
+Abstraction diterapkan melalui abstract class `Pasien` dan abstract method `tampilkanInfo()`.
 
-Method pertama:
+```java
+public abstract class Pasien
+```
+
+Class `Pasien` menjadi dasar bagi seluruh jenis pasien dan tidak digunakan untuk membuat objek secara langsung.
+
+Abstract method yang digunakan:
 
 ```java
 public abstract void tampilkanInfo();
 ```
 
-Method kedua:
-
-```java
-public void tampilkanInfo(int cekId) {
-    if (cekId == idPasien) {
-        tampilkanInfo();
-    } else {
-        System.out.println("ID pasien tidak sesuai");
-    }
-}
-```
-
-Perbedaannya terletak pada parameter. Method pertama tidak memiliki parameter, sedangkan method kedua memiliki parameter `int cekId`.
-
-Pada `PasienController`, method overloading tersebut digunakan ketika pasien dipanggil:
-
-```java
-pasienDipanggil.tampilkanInfo(idPanggil);
-```
-
-Method tersebut kemudian memeriksa ID dan memanggil `tampilkanInfo()` sesuai jenis objek pasien.
+Method tersebut harus diimplementasikan oleh subclass `PasienUmum` dan `PasienBPJS`. Dengan abstraction, class induk menentukan perilaku dasar, sedangkan setiap subclass menentukan detail implementasinya.
 
 ---
 
-# 🧱 Penerapan Abstraction
+## 🔌 8. Penerapan JDBC
 
-Abstraction diterapkan menggunakan **abstract class** dan **abstract method**.
+JDBC (*Java Database Connectivity*) digunakan untuk menghubungkan program Java dengan database MySQL agar data pasien dapat disimpan dan dikelola secara permanen.
 
-Class `Pasien` dibuat sebagai abstract class:
+Penerapannya terdapat pada package `database` dan `dao`.
 
-<img width="394" height="134" alt="image" src="https://github.com/user-attachments/assets/4c36a8c1-863c-4d0c-a71a-c9ca705f8194" />
+### A. Koneksi Database
 
-Karena `Pasien` merupakan konsep umum, class tersebut tidak dibuat sebagai objek secara langsung. Objek yang digunakan dalam program adalah `PasienUmum` dan `PasienBPJS`.
+File `KoneksiDatabase.java` mengatur koneksi ke database `klinik` menggunakan `DriverManager.getConnection()`.
 
-Selain itu, class `Pasien` memiliki abstract method:
+<img width="787" height="417" alt="image" src="https://github.com/user-attachments/assets/0a9d6f02-e2f6-422f-9e77-f50c3498c11f" />
 
-<img width="449" height="41" alt="image" src="https://github.com/user-attachments/assets/01258486-2e26-4314-868e-b1f9c9ddc6e0" />
 
-Method tersebut tidak memiliki implementasi di superclass dan harus diimplementasikan oleh setiap subclass.
+### B. Operasi Database
 
-Pada `PasienUmum`, method tersebut digunakan untuk menampilkan informasi pasien umum.
+File `PasienDAO.java` menangani operasi SQL menggunakan beberapa class JDBC:
 
-Pada `PasienBPJS`, method tersebut digunakan untuk menampilkan informasi pasien BPJS.
+- `Connection` untuk mengelola koneksi database.
+- `PreparedStatement` untuk menjalankan perintah SQL dengan parameter.
+- `ResultSet` untuk membaca hasil query.
+- `SQLException` untuk menangani kesalahan operasi SQL.
 
-Dengan abstraction, class `Pasien` hanya menentukan perilaku dasar yang harus dimiliki oleh setiap jenis pasien, sedangkan detail tampilannya ditentukan oleh masing-masing subclass.
+DAO menyediakan proses untuk menambah, mengambil, menampilkan, memperbarui, dan menghapus data pasien.
 
----
+### C. Struktur Database
 
-# 🧩 Penerapan Interface
+Database yang digunakan bernama `klinik` dan terdiri dari tiga tabel utama:
 
-Sebagai nilai tambah, program menerapkan interface `Pembayaran`.
+| Tabel | Fungsi |
+|---|---|
+| `pasien` | Menyimpan data dasar pasien. |
+| `pasien_umum` | Menyimpan jenis pembayaran Pasien Umum. |
+| `pasien_bpjs` | Menyimpan nomor BPJS pasien. |
 
-Interface dibuat pada file:
+Tabel `pasien_umum` dan `pasien_bpjs` terhubung ke tabel `pasien` menggunakan foreign key.
+
+### D. Alur JDBC
 
 ```text
-model/Pembayaran.java
+PasienController
+       |
+       v
+   PasienCRUD
+       |
+       v
+    PasienDAO
+       |
+       v
+KoneksiDatabase
+       |
+       v
+   MySQL
 ```
 
-Isi interface:
-
-<img width="319" height="93" alt="image" src="https://github.com/user-attachments/assets/b9355c3c-fc45-4550-b1a0-9b5dec6e008f" />
-
-Interface tersebut kemudian diterapkan oleh class `PasienUmum`:
-
-```java
-public class PasienUmum extends Pasien implements Pembayaran
-```
-
-Class `PasienUmum` kemudian mengimplementasikan method:
-
-<img width="720" height="93" alt="image" src="https://github.com/user-attachments/assets/11335b1d-52de-453d-bb3b-a304fce76419" />
-
-Method `prosesPembayaran()` digunakan pada saat pasien umum dipanggil melalui `PasienController`.
-
-Dengan adanya interface, proses pembayaran menjadi sebuah perilaku khusus yang diterapkan pada class yang menggunakan `Pembayaran`.
+Dengan JDBC, perubahan data dilakukan langsung ke database. Data yang belum dihapus tetap tersimpan meskipun program ditutup.
 
 ---
 
-# 🏗️ Penerapan MVC
+## 🧩 9. Penerapan Interface
 
-Program menggunakan pola **Model-View-Controller (MVC)** untuk memisahkan pengelolaan data, tampilan, dan alur program.
+yang diterapkan adalah interface `Pembayaran` pada package `model`.
 
-## Model
+Interface tersebut mendefinisikan method:
 
-Package `model` berisi:
+<img width="342" height="153" alt="image" src="https://github.com/user-attachments/assets/672f4263-eb32-4f36-b2d8-450db027883b" />
 
-```text
-Pasien.java
-PasienUmum.java
-PasienBPJS.java
-Pembayaran.java
-```
 
-Model bertanggung jawab terhadap data dan perilaku objek pasien.
+Interface digunakan oleh class `PasienUmum`:
 
-`Pasien` menjadi abstract class, sedangkan `PasienUmum` dan `PasienBPJS` menjadi turunannya.
+<img width="640" height="61" alt="image" src="https://github.com/user-attachments/assets/fc34110c-5239-45de-942d-af84e6f15df4" />
 
----
 
-## View
+Class `PasienUmum` mengimplementasikan method `prosesPembayaran()` untuk menampilkan informasi jenis pembayaran pasien. Method ini digunakan ketika pasien umum dipanggil melalui Controller.
 
-Package `view` berisi:
-
-```text
-PasienView.java
-```
-
-`PasienView` bertanggung jawab terhadap tampilan yang dilihat pengguna, seperti:
-
-- Menampilkan menu utama
-- Menampilkan daftar pasien
-- Menampilkan pilihan jenis pasien
-- Menampilkan pesan atau notifikasi
-
-Contohnya:
-
-```java
-view.tampilkanMenu();
-```
-
-dan:
-
-```java
-view.tampilkanDaftarPasien(crud.getListPasien());
-```
+Penerapan interface membuat perilaku pembayaran didefinisikan melalui kontrak yang harus diimplementasikan oleh class terkait.
 
 ---
 
-## Controller
+## 🏗️ 10. Penerapan MVC
 
-Package `controller` berisi:
+Program menggunakan pola MVC untuk memisahkan data, tampilan, dan alur program.
 
-```text
-PasienController.java
-```
+| Komponen | Class/Package | Fungsi |
+|---|---|---|
+| Model | `model` | Merepresentasikan data dan perilaku pasien. |
+| View | `PasienView.java` | Menampilkan menu, daftar pasien, dan pesan. |
+| Controller | `PasienController.java` | Mengatur alur program dan pilihan pengguna. |
 
-`PasienController` bertugas mengatur alur utama program.
+Selain MVC, terdapat dua lapisan tambahan:
 
-Controller menerima input dari pengguna, menentukan menu yang dipilih, kemudian menghubungkan View dengan Service dan Model.
+- **Service:** `PasienCRUD.java` mengatur proses pengelolaan data pasien.
+- **DAO:** `PasienDAO.java` menangani komunikasi dengan database melalui JDBC.
 
-Contohnya ketika pengguna memilih menu tambah pasien, Controller meminta input melalui `ValidasiInput`, membuat objek `PasienUmum` atau `PasienBPJS`, kemudian mengirimkannya ke `PasienCRUD`.
-
----
-
-## Service
-
-Package `service` berisi:
-
-```text
-PasienCRUD.java
-```
-
-Class `PasienCRUD` menangani proses pengelolaan data pasien, seperti:
-
-- Menambah pasien
-- Mengecek ID pasien
-- Mengubah data pasien
-- Menghapus pasien
-- Memanggil pasien
-- Menyimpan data menggunakan `ArrayList`
-
-Service tidak bertugas menampilkan menu kepada pengguna. Proses tampilan tetap ditangani oleh `PasienView`.
+Pemisahan ini membuat tanggung jawab setiap bagian program lebih jelas dan memudahkan pemeliharaan kode.
 
 ---
 
-## Main
+## ✅ 11. Validasi Input
 
-Package `main` berisi:
+Validasi input diterapkan melalui class `ValidasiInput.java` pada package `helper`.
 
-```text
-Main.java
-```
+Validasi yang digunakan meliputi:
 
-`Main.java` hanya menjadi titik awal program dengan membuat objek `PasienController` dan menjalankan program.
+<img width="683" height="295" alt="image" src="https://github.com/user-attachments/assets/728a41b9-2b72-4e83-8f1c-18e3318b7fba" />
 
-```java
-public static void main(String[] args) {
-    PasienController controller = new PasienController();
-    controller.jalankanProgram();
-}
-```
+- **Nama pasien:** hanya menerima huruf dan spasi.
 
-Dengan demikian, `Main.java` tidak menangani proses menu dan CRUD secara langsung.
+<img width="647" height="269" alt="image" src="https://github.com/user-attachments/assets/5ed217c4-4edb-4587-bc8f-e249578a437b" />
+
+- **Umur pasien:** berada pada rentang 1–200 tahun.
+
+<img width="1107" height="335" alt="image" src="https://github.com/user-attachments/assets/da01f703-b979-4d35-9700-df78ebb9be1e" />
+
+- **Nomor telepon:** terdiri dari 9–13 digit angka.
+
+<img width="787" height="286" alt="image" src="https://github.com/user-attachments/assets/29d2b59c-fbff-4be4-a450-336fc580e473" />
+
+- **Nomor BPJS:** hanya menerima angka.
+
+<img width="673" height="329" alt="image" src="https://github.com/user-attachments/assets/3fa54315-be0a-4e69-a247-c99da790f6f8" />
+
+
+Jika input tidak sesuai, program meminta pengguna memasukkan kembali data yang benar.
 
 ---
 
-# ✅ Validasi Input
 
-Validasi input dibuat pada class `ValidasiInput` yang berada di package `helper`.
+## 📁 13. File Database
 
-Validasi digunakan agar program tidak berhenti atau menghasilkan data yang tidak sesuai ketika pengguna memasukkan input yang salah.
+Repository menyertakan file `klinik.sql` yang berisi perintah SQL untuk membuat database dan tabel yang digunakan oleh program.
 
-### Validasi pilihan angka
-
-Method `inputInteger()` memastikan input berupa angka.
-
-Jika pengguna memasukkan huruf, program akan menampilkan:
-
-<img width="679" height="318" alt="image" src="https://github.com/user-attachments/assets/930e18c1-a598-4639-8323-d1291f74e245" />
-
-dan meminta input kembali.
-
-### Validasi nama
-
-Nama hanya dapat berisi huruf dan spasi.
-
-<img width="666" height="274" alt="image" src="https://github.com/user-attachments/assets/bd9172cb-be04-403d-a3eb-adc451364aa7" />
-
-### Validasi umur
-
-Umur harus berada pada rentang:
-
-<img width="646" height="236" alt="image" src="https://github.com/user-attachments/assets/8ac13da5-1c8e-4feb-abd8-d79b9e1402c2" />
-
-### Validasi nomor telepon
-
-Nomor telepon harus berupa angka dengan panjang:
-
-<img width="917" height="271" alt="image" src="https://github.com/user-attachments/assets/b29a05db-43e9-42a3-9770-3f9f41b4b778" />
-
-### Validasi nomor BPJS
-
-<img width="728" height="278" alt="image" src="https://github.com/user-attachments/assets/9950b87f-23bf-4aaa-8031-75fa5ae988e1" />
-
-Nomor BPJS hanya boleh berupa angka.
-
-Jika input tidak sesuai, program akan meminta pengguna memasukkan kembali data yang benar.
-
-Validasi dibuat menggunakan perulangan sehingga hanya bagian input yang salah yang akan diminta ulang.
+Sebelum menjalankan aplikasi, impor atau jalankan file `klinik.sql` melalui MySQL atau phpMyAdmin.
 
 ---
